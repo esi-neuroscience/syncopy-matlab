@@ -30,8 +30,8 @@ cfg = ft_checkconfig(cfg, 'required', {'filename'});
 filename = ft_getopt(cfg, 'filename');        % there is no default
 
 [folder, basename, ext] = fileparts(filename);
-if ~strcmp(ext, '.ang')
-    filename = [filename '.ang'];
+if ~strcmp(ext, '.analog')
+    filename = [filename '.analog'];
 end
 
 dimord = tokenize(datain.dimord, '_');

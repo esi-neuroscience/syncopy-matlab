@@ -10,7 +10,7 @@ ft_defaults
 
 
 
-switch spyInfo.type
+switch spyInfo.dataclass
     case 'AnalogData'
     
         dataout = [];
@@ -22,7 +22,7 @@ switch spyInfo.type
         dataout.time =  {(0:size(data, iTimeDim)-1)/spyInfo.samplerate};
         dataout.sampleinfo = [1 size(data, iTimeDim)];
         % Fieldtrip can currently (4 Jul 2019) not handle data with an existing but empty hdr field
-        if ~isempty(spyInfo.hdr)
+        if ~isempty(spyInfo.x0x5Fhdr)
             dataout.hdr = spyInfo.hdr;
         end
         

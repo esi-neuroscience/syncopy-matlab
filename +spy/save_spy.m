@@ -68,7 +68,9 @@ hdfFile = fullfile(path, [base, ext]);
 dataSize = size(data);
 dataSize = dataSize(end:-1:1);
 
-delete(hdfFile)
+if exist(hdfFile, 'file') == 2
+    delete(hdfFile)
+end
 h5create(hdfFile, ['/' dclass], dataSize, 'Datatype', class(data) )
 h5write(hdfFile, ['/' dclass], permute(data, ndims(data):-1:1))
 
@@ -78,10 +80,10 @@ h5create(hdfFile, '/trialdefinition', trlSize, 'Datatype', class(trialdefinition
 h5write(hdfFile, '/trialdefinition', (trialdefinition-1)')
 
 % attributes
-h5writeatt(hdfFile, '/', 'log', log)
-h5writeatt(hdfFile, '/', 'type', dclass)
+h5writeatt(hdfFile, '/', '_log', log)
+% h5writeatt(hdfFile, '/', 'type', dclass)
 h5writeatt(hdfFile, '/', 'samplerate', samplerate)
-h5writeatt(hdfFile, '/', 'version', version)
+h5writeatt(hdfFile, '/', '_version', version)
 
 % cell arrays don't work with hdf5write
 cellstr_h5writeatt(hdfFile, 'channel', channel)
@@ -93,12 +95,12 @@ hdfHash = spy.hash.DataHash(hdfFile, 'SHA-1', 'file');
 jsonFile = fullfile(path, [base, ext, '.info']);
 spyInfo = spy.SyncopyInfo();
 
-spyInfo.filename = hdfFile;
-spyInfo.log = log;
-spyInfo.version = version;
+spyInfo.filename = [base, ext];
+spyInfo.x0x5Flog = log;
+spyInfo.x0x5Fversion = version;
 spyInfo.dimord = dimord;
 spyInfo.samplerate = samplerate;
-spyInfo.type = dclass;
+spyInfo.dataclass = dclass;
 spyInfo.channel = channel;
 spyInfo.file_checksum = hdfHash;
 spyInfo.checksum_algorithm = 'openssl_sha1';
@@ -110,7 +112,7 @@ spyInfo.trl_dtype = spy.dtype_mat2py(trialdefinition);
 spyInfo.trl_offset = h5getoffset(hdfFile, '/trialdefinition');
 spyInfo.cfg = [];
 spyInfo.cfg.previous = cfg;
-spyInfo.cfg.function = 'write_spy';
+spyInfo.cfg.function = 'write_spy.m';
 spyInfo.cfg.time = datestr(now);
 spyInfo.cfg.user = char(java.lang.System.getProperty('user.name'));
 spyInfo.cfg.hostname = char(java.net.InetAddress.getLocalHost().getHostName());

@@ -71,8 +71,9 @@ for iAttr = 1:length(h5attrs)
     end
     if ~ischar(value)
         value = value';
-    end
-    attrs.(name) = value;
+    end    
+    name = strrep(name, '_', 'x0x5F');
+    attrs.(name) = value;         
     assert(isequal(spyInfo.(name), value), ...
         'JSON/HDF5 mismatch for attribute %s', name)
 end

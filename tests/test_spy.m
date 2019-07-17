@@ -11,7 +11,7 @@ clear
 
 %% test low-level functions load_spy and save_spy
 
-filename = 'matlab-testdata_test';
+filename = '/tmp/matlab-testdata_test';
 
 % 5 s, 10 channels
 nSamples = 5000;
@@ -42,7 +42,7 @@ delete([fullfile(filename) '.*'])
 
 % load data and compare
 loaded = [];
-[loaded.data, loaded.trl, loaded.spyInfo] = spy.load_spy(fullfile([filename '.ang']));
+[loaded.data, loaded.trl, loaded.spyInfo] = spy.load_spy(fullfile([filename '.analog']));
 
 % compare generated and loaded INFO
 assert(isequal(generated.spyInfo, loaded.spyInfo))
@@ -69,8 +69,9 @@ if exist('ft_defaults', 'file') == 2
     data = ft_checkdata(data, 'datatype', 'raw', 'hassampleinfo', 'yes');
     data.trialinfo = [65 34 1; 69 25.3 2];
     
+    
     cfg = [];
-    cfg.filename = 'ft_testdata.ang';
+    cfg.filename = '/tmp/ft_testdata.analog';
     
     % save data to file
     spy.ft_save_spy(cfg, data);

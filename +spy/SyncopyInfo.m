@@ -1,11 +1,15 @@
 classdef SyncopyInfo
     % Class for required fields in Syncopy INFO file
-       
+    % 
+    % For private Python properties (_*) the underscore at the beginning has to
+    % be replaced with its hex value 'x0x5F' (95). jsonlab then handles
+    % replacing it when writing/reading to the JSON file.
+    % 
     properties
         filename
         dimord
-        version
-        log
+        x0x5Fversion = '0.1a'
+        x0x5Flog
         cfg
         data_dtype
         data_shape
@@ -15,10 +19,11 @@ classdef SyncopyInfo
         trl_dtype
         trl_shape
         trl_offset
-        type
+        dataclass
         channel
         samplerate
-        hdr
+        x0x5Fhdr
+        order = 'C'
     end
     
     properties (Access = private, Constant = true, Hidden=true)
@@ -26,7 +31,7 @@ classdef SyncopyInfo
             'int32', 'uint32', 'int64', 'uint64', ...
             'float32', 'float64', ...
             'complex64', 'complex128'};
-        requiredFields = {'dimord', 'version', 'log', 'cfg', ...
+        requiredFields = {'dimord', 'x0x5Fversion', 'x0x5Flog', 'cfg', ...
             'data_dtype', 'data_shape', 'data_offset', ...
             'trl_dtype', 'trl_shape', 'trl_offset'}
     end
@@ -65,9 +70,9 @@ classdef SyncopyInfo
             obj.dimord = value;
         end
         
-        function obj = set.version(obj, value)
+        function obj = set.x0x5Fversion(obj, value)
             assert(ischar(value), 'version must be a string')
-            obj.version = value;
+            obj.x0x5Fversion = value;
         end
         
         % FIXME: implement other set functions as sanity checks
@@ -109,13 +114,13 @@ classdef SyncopyInfo
     
     methods ( Static = true )
         function output_struct = obj2struct(obj)
-            properties = fieldnames(obj); % works on structs & classes (public properties)
+            props = fieldnames(obj); % works on structs & classes (public properties)
             
-            for i = 1:length(properties)
-                val = obj.(properties{i});
+            for i = 1:length(props)
+                val = obj.(props{i});
                 
                 if ~isstruct(val) &&~isobject(val)
-                    output_struct.(properties{i}) = val;
+                    output_struct.(props{i}) = val;
                 else
                     
                     if isa(val, 'serial') || isa(val, 'visa') || isa(val, 'tcpip')
@@ -126,7 +131,7 @@ classdef SyncopyInfo
                     temp = obj.obj2struct(val);
                     
                     if ~isempty(temp)
-                        output_struct.(properties{i}) = temp;
+                        output_struct.(props{i}) = temp;
                     end
                     
                 end
