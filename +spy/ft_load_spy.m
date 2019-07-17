@@ -22,8 +22,8 @@ switch spyInfo.dataclass
     case 'AnalogData'
     
         dataout = [];
-        dataout.label = spyInfo.channel;
-        dataout.trial = {data};
+        dataout.label = spyInfo.channel(:);
+        
         dataout.fsample = spyInfo.samplerate;
         
         iTimeDim =  find(strcmp(spyInfo.dimord, 'time'));
@@ -34,15 +34,21 @@ switch spyInfo.dataclass
             dataout.hdr = spyInfo.spyInfo.x0x5F_hdr;
         end
         
+        dimord = spyInfo.dimord;
+        if iTimeDim == 1
+            data = data';
+            dimord = dimord';
+        end
+        dataout.trial = {data};
+        dataout.dimord = ['{rpt}_' strrep(cell2mat(join(dimord, '_')), 'channel', 'label')];
+
         % cut data in trials
         trlCfg = []; trlCfg.trl = trl;        
         dataout = ft_redefinetrial(trlCfg, dataout);
         
         % final check
-        dataout.dimord = ['{rpt}_' strrep(cell2mat(join(spyInfo.dimord, '_')), 'channel', 'label')];
         dataout = ft_checkdata(dataout, 'datatype', 'raw', ...
-            'feedback', 'no', 'hassampleinfo', 'yes', ...
-            'dimord', '{rpt}_label_time');
+            'feedback', 'no', 'hassampleinfo', 'yes');
         
     otherwise
         error('Currently unsupported Syncopy data class %s', spyInfo.type)
