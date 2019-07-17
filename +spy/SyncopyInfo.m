@@ -8,8 +8,8 @@ classdef SyncopyInfo
     properties
         filename
         dimord
-        x0x5Fversion = '0.1a'
-        x0x5Flog
+        x0x5F_version = '0.1a'
+        x0x5F_log
         cfg
         data_dtype
         data_shape
@@ -22,7 +22,7 @@ classdef SyncopyInfo
         dataclass
         channel
         samplerate
-        x0x5Fhdr
+        x0x5F_hdr
         order = 'C'
     end
     
@@ -31,7 +31,7 @@ classdef SyncopyInfo
             'int32', 'uint32', 'int64', 'uint64', ...
             'float32', 'float64', ...
             'complex64', 'complex128'};
-        requiredFields = {'dimord', 'x0x5Fversion', 'x0x5Flog', 'cfg', ...
+        requiredFields = {'dimord', 'x0x5F_version', 'x0x5F_log', 'cfg', ...
             'data_dtype', 'data_shape', 'data_offset', ...
             'trl_dtype', 'trl_shape', 'trl_offset'}
     end
@@ -70,9 +70,9 @@ classdef SyncopyInfo
             obj.dimord = value;
         end
         
-        function obj = set.x0x5Fversion(obj, value)
+        function obj = set.x0x5F_version(obj, value)
             assert(ischar(value), 'version must be a string')
-            obj.x0x5Fversion = value;
+            obj.x0x5F_version = value;
         end
         
         % FIXME: implement other set functions as sanity checks
@@ -106,7 +106,7 @@ classdef SyncopyInfo
         end
         
         function write_to_file(obj, filename)
-            obj.assert_has_all_required();
+            obj.assert_has_all_required();                        
             spy.jsonlab.savejson('', struct(obj), filename);
         end
         
@@ -118,7 +118,9 @@ classdef SyncopyInfo
             
             for i = 1:length(props)
                 val = obj.(props{i});
-                
+                if numel(val) > 256                    
+                    val = sprintf('[%d element %s]', numel(val), class(val));
+                end
                 if ~isstruct(val) &&~isobject(val)
                     output_struct.(props{i}) = val;
                 else
@@ -128,7 +130,7 @@ classdef SyncopyInfo
                         continue
                     end
                     
-                    temp = obj.obj2struct(val);
+                    temp = spy.SyncopyInfo.obj2struct(val);
                     
                     if ~isempty(temp)
                         output_struct.(props{i}) = temp;

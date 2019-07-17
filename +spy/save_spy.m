@@ -96,8 +96,8 @@ jsonFile = fullfile(path, [base, ext, '.info']);
 spyInfo = spy.SyncopyInfo();
 
 spyInfo.filename = [base, ext];
-spyInfo.x0x5Flog = log;
-spyInfo.x0x5Fversion = version;
+spyInfo.x0x5F_log = log;
+spyInfo.x0x5F_version = version;
 spyInfo.dimord = dimord;
 spyInfo.samplerate = samplerate;
 spyInfo.dataclass = dclass;
