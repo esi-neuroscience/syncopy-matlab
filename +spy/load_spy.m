@@ -5,8 +5,8 @@ function [data, trl, spyInfo] = load_spy(inFile)
 %
 % INPUT
 % -----
-%   in_file : optional, filename of INFO or HDF5 file
-%             If not provided, a file selector will show up.
+%   inFile : optional, filename of INFO or HDF5 file
+%            If not provided, a file selector will show up.
 %
 % OUTPUT
 % ------

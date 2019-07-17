@@ -1,14 +1,22 @@
 function dataout = ft_load_spy(varargin)
-
+% FT_LOAD_SPY Load Syncopy file as Fieldtrip data struct
+% 
+%   dataout = ft_load_spy({filename})
+%
+% INPUT
+% -----
+%   inFile : optional, filename of INFO or HDF5 file
+%            If not provided, a file selector will show up.
+%
+% OUTPUT
+% ------
+%  dataout : a Fieldtrip raw data struct
+% 
 % See also ft_datatype_raw, spy.write_spy
 
 ft_defaults
 
-
-
 [data, trl, spyInfo] = spy.load_spy(varargin{:});
-
-
 
 switch spyInfo.dataclass
     case 'AnalogData'
