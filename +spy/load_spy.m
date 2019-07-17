@@ -57,7 +57,10 @@ ndim = length(h5toc.Datasets(msk).Dataspace.Size);
 data = permute(h5read(hdfFile, ['/', dclass]), ndim:-1:1);
 
 % The `trialdefinition` part is always 2D -just transpose it
-trl = h5read(hdfFile, '/trialdefinition')' + 1;
+trl = h5read(hdfFile, '/trialdefinition')';
+% Add 1 to the start sample to consider zero-based indexing. The second 
+% column is fine because ranges in Python don't include the last element.
+trl(:,1) = trl(:,1) + 1;
 
 % extract container attributes
 h5attrs = h5toc.Attributes;

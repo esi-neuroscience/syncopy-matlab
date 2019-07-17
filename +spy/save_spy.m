@@ -77,7 +77,10 @@ h5write(hdfFile, ['/' dclass], permute(data, ndims(data):-1:1))
 trlSize = size(trialdefinition);
 trlSize = trlSize(end:-1:1);
 h5create(hdfFile, '/trialdefinition', trlSize, 'Datatype', class(trialdefinition))
-h5write(hdfFile, '/trialdefinition', (trialdefinition-1)')
+
+% convert to 0-based indexing with endsamples not included (Python)
+trialdefinition(:,1) = trialdefinition(:,1)-1;
+h5write(hdfFile, '/trialdefinition', (trialdefinition)')
 
 % attributes
 h5writeatt(hdfFile, '/', '_log', log)
