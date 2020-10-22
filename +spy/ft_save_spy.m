@@ -1,17 +1,14 @@
 function ft_save_spy(cfg, datain)
 % FT_SAVE_SPY Save a Fieldtrip data struct as Syncopy file
 % 
-%   dataout = ft_save_spy(cfg, {filename})
+%   dataout = ft_save_spy(cfg, data)
 %
 % INPUT
 % -----
 %   cfg : configuration struct with fields
 %      .filename : path to Syncopy data file
+%   data : a FieldTrip data struct
 %
-% OUTPUT
-% ------
-%  dataout : a Fieldtrip raw data struct
-% 
 % See also ft_datatype_raw, spy.write_spy
 
 % these are used by the ft_preamble/ft_postamble function and scripts
