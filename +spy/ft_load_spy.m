@@ -50,7 +50,61 @@ switch spyInfo.dataclass
         dataout = ft_checkdata(dataout, 'datatype', 'raw', ...
             'feedback', 'no', 'hassampleinfo', 'yes');
         
+    case 'SpectralData'
+
+        % get axis position of dimensional quantities
+        iTimeDim  = find(strcmp(spyInfo.dimord, 'time'));
+        iTaperDim = find(strcmp(spyInfo.dimord, 'taper'));
+        iFreqDim  = find(strcmp(spyInfo.dimord, 'freq'));
+        iChanDim  = find(strcmp(spyInfo.dimord, 'channel'));
+        nChan     = size(data, iChanDim);
+        nFreq     = size(data, iFreqDim);
+        nTrials   = size(trl, 1);
+
+        if size(data, iTaperDim) > 1
+            error(['Importing SpectralData objects with multiple tapers ',...
+                   'currently unsupported. Please average tapers first. '])
+        end
+
+        % assign everything that is common to both static and time-frequency structs
+        dataout = [];
+        dataout.label = spyInfo.channel(:);
+        dataout.dimord = '';
+        if nTrials > 1
+            dataout.dimord = 'rpt_';
+        end
+        dataout.dimord = [dataout.dimord, 'chan_freq'];
+        if isreal(data)
+            dataLabel = 'powspctrm';
+        else
+            dataLabel = 'fourierspctrm';
+        end
+        dataout.freq = spyInfo.freq(:)';
+
+        % time-frequency data have an additional time property, take care of this
+        isTimeFreq = size(data, iTimeDim) > nTrials;
+        if isTimeFreq
+            dataout.dimord = [dataout.dimord, '_time'];
+            data = permute(data, [iTaperDim, iChanDim, iFreqDim, iTimeDim]);
+            dataout.time = ((0:(trl(1, 2) - trl(1, 1))) + trl(1, 3)) ./ spyInfo.samplerate;
+            if nTrials == 1
+                dataout.(dataLabel) = squeeze(data);
+            else
+                tLens = diff(trl(:,1:2), 1, 2) + 1;
+                if length(unique(tLens)) > 1
+                    error(['Importing time-frequency SpectralData with differing trial lengths ', ...)
+                           'currently unsupported. Please use `spy.selectdata` to consolidate trials first. '])
+                end
+                dataout.(dataLabel) = reshape(data, [nTrials, nChan, nFreq, tLens(1)]);
+            end
+        else
+            dataout.(dataLabel) = squeeze(permute(data, [iTimeDim, iTaperDim, iChanDim, iFreqDim]));
+        end
+
+        % final check
+        dataout = ft_checkdata(dataout, 'datatype', 'freq', 'feedback', 'no', 'hassampleinfo', 'yes');
+
     otherwise
         error('Currently unsupported Syncopy data class %s', spyInfo.type)
-        
+
 end

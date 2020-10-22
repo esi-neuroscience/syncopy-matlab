@@ -59,9 +59,9 @@ if exist('ft_defaults', 'file') == 2
     
     % create Fieldtrip data struct
     data = [];
-    data.label = {'channel1', 'channel2'};
+    data.label = {'channel1', 'channel2', 'channel3'};
     data.fsample = 1000;
-    data.trial = {rand(2, 3000), rand(2,3200)};
+    data.trial = {rand(3, 3000), rand(3,3200)};
     data.time = cellfun(@(x) (0:length(x)-1)/data.fsample, data.trial, 'unif', false);
     data.dimord = '{rpt}_label_time';
     data.sampleinfo = [1 3000; ...

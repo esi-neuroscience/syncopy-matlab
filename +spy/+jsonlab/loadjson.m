@@ -343,7 +343,6 @@ function [str, pos,index_esc] = parseStr(inputstr, pos, esc, index_esc, varargin
                 end
             otherwise % should never happen
                 str(nstr+1) = inputstr(pos);
-                keyboard;
                 pos = pos + 1;
         end
     end

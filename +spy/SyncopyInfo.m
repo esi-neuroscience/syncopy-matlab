@@ -1,4 +1,4 @@
-classdef SyncopyInfo
+classdef SyncopyInfo < dynamicprops
     % Class for required fields in Syncopy INFO file
     % 
     % For private Python properties (_*) the underscore at the beginning has to
@@ -43,17 +43,20 @@ classdef SyncopyInfo
             if nargin > 0
                 
                 if ischar(infoStruct)
-                    assert(exist(infoStruct, 'file') == 2)
+                    assert(exist(infoStruct, 'file') == 2, ...
+                        'Info-file %s does not exist', infoStruct)
                     infoStruct = spy.jsonlab.loadjson(infoStruct);
                 end
-                
+
                 fields = fieldnames(infoStruct);
                 
                 for iField = 1:length(fields)
                     name = fields{iField};
                     
-                    if ~isprop(obj, name) || isempty(infoStruct.(name))
+                    if isempty(infoStruct.(name))
                         continue
+                    elseif ~isprop(obj, name)
+                        prop = obj.addprop(name);
                     end
                     
                     obj.(name) = infoStruct.(name);
