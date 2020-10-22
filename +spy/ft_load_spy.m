@@ -40,11 +40,11 @@ switch spyInfo.dataclass
             dimord = dimord';
         end
         dataout.trial = {data};
-        dataout.dimord = ['{rpt}_' strrep(cell2mat(join(dimord, '_')), 'channel', 'label')];
 
         % cut data in trials
-        trlCfg = []; trlCfg.trl = trl;        
+        trlCfg = []; trlCfg.trl = trl;
         dataout = ft_redefinetrial(trlCfg, dataout);
+        dataout.dimord = ['{rpt}_' strrep(cell2mat(join(dimord, '_')), 'channel', 'label')];
         
         % final check
         dataout = ft_checkdata(dataout, 'datatype', 'raw', ...
