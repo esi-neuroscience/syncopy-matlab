@@ -27,7 +27,7 @@ function [hdfFile, jsonFile, spyInfo] = save_spy(filename, ...
 %
 % See also ft_save_spy
 
-version = '0.1a';
+version = '0.1b';
 
 p = inputParser;
 p.addRequired('filename', ...
@@ -71,8 +71,14 @@ dataSize = dataSize(end:-1:1);
 if exist(hdfFile, 'file') == 2
     delete(hdfFile)
 end
-h5create(hdfFile, ['/' dclass], dataSize, 'Datatype', class(data) )
-h5write(hdfFile, ['/' dclass], permute(data, ndims(data):-1:1))
+
+% HDF5 layout is `dclass`-specific
+switch dclass 
+    case 'AnalogData'
+        dsetname = 'data';
+        h5create(hdfFile, ['/', dsetname], dataSize, 'Datatype', class(data) )
+        h5write(hdfFile, ['/', dsetname], permute(data, ndims(data):-1:1))
+end
 
 trlSize = size(trialdefinition);
 trlSize = trlSize(end:-1:1);
@@ -84,7 +90,6 @@ h5write(hdfFile, '/trialdefinition', (trialdefinition)')
 
 % attributes
 h5writeatt(hdfFile, '/', '_log', log)
-% h5writeatt(hdfFile, '/', 'type', dclass)
 h5writeatt(hdfFile, '/', 'samplerate', samplerate)
 h5writeatt(hdfFile, '/', '_version', version)
 
@@ -109,7 +114,7 @@ spyInfo.file_checksum = hdfHash;
 spyInfo.checksum_algorithm = 'openssl_sha1';
 spyInfo.data_dtype = spy.dtype_mat2py(data);
 spyInfo.data_shape = size(data);
-spyInfo.data_offset = h5getoffset(hdfFile, ['/' dclass]);
+spyInfo.data_offset = h5getoffset(hdfFile, ['/' dsetname]);
 spyInfo.trl_shape = size(trialdefinition);
 spyInfo.trl_dtype = spy.dtype_mat2py(trialdefinition);
 spyInfo.trl_offset = h5getoffset(hdfFile, '/trialdefinition');

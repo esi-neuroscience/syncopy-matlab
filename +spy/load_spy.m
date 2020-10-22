@@ -23,6 +23,12 @@ if nargin == 0
         'Pick a data file');
     if infoFile == 0; return; end
     inFile = fullfile(pathname, infoFile);
+else
+    if isa(inFile, 'str')
+        inFile = char(inFile);
+    elseif ~isa(inFile, 'char')
+        error('Input has to be a file-name, not %s', class(inFile))
+    end
 end
 
 [folder, filestem, ext] = fileparts(inFile);
