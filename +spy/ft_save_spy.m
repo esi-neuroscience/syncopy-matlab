@@ -60,7 +60,7 @@ for iTrial = 1:length(datain.trial)
     indx = indx + length(datain.time{iTrial});
 end
 if isfield(datain, 'trialinfo')
-    trl(:, 4:6) = datain.trialinfo;
+    trl(:, 4:end) = datain.trialinfo;
 end
 
 log = 'Created some test data';
