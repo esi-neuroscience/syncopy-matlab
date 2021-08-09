@@ -5,14 +5,14 @@ function dataout = ft_load_spy(varargin)
 %
 % INPUT
 % -----
-%   inFile : optional, filename of INFO or HDF5 file
+%   inFile : (OPTIONAL) filename of INFO or HDF5 file
 %            If not provided, a file selector will show up.
 %
 % OUTPUT
 % ------
 %  dataout : a Fieldtrip raw data struct
 % 
-% See also ft_datatype_raw, spy.write_spy
+% See also ft_datatype_raw, spy.load_spy
 
 ft_defaults
 

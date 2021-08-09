@@ -8,7 +8,7 @@ function [hdfFile, jsonFile, spyInfo] = save_spy(filename, ...
 %
 % INPUT
 % -----
-%  filename   : filename to be used for saving. The resulting filenames will 
+%  filename   : filename to be used for saving. The resulting filenames will
 %               be <filename>.analog (HDF5) and <filename>.analog.info (JSON).
 %  data       : data array to be stored in HDF5 file
 %  trialdefinition : [nTrials x 3+N] array describing beginning, end and
@@ -26,8 +26,6 @@ function [hdfFile, jsonFile, spyInfo] = save_spy(filename, ...
 %   spyInfo   : spy.SyncopyInfo object with metainformation in JSON file
 %
 % See also ft_save_spy
-
-version = '0.1b';
 
 p = inputParser;
 p.addRequired('filename', ...
@@ -73,7 +71,7 @@ if exist(hdfFile, 'file') == 2
 end
 
 % HDF5 layout is `dclass`-specific
-switch dclass 
+switch dclass
     case 'AnalogData'
         dsetname = 'data';
         h5create(hdfFile, ['/', dsetname], dataSize, 'Datatype', class(data) )
@@ -88,6 +86,10 @@ h5create(hdfFile, '/trialdefinition', trlSize, 'Datatype', class(trialdefinition
 trialdefinition(:,1) = trialdefinition(:,1)-1;
 h5write(hdfFile, '/trialdefinition', (trialdefinition)')
 
+% Instantiate `SyncopyInfo` class to fetch current Matlab interface version
+spyInfo = spy.SyncopyInfo();
+version = spyInfo.x0x5F_version;
+
 % attributes
 h5writeatt(hdfFile, '/', '_log', log)
 h5writeatt(hdfFile, '/', 'samplerate', samplerate)
@@ -101,11 +103,9 @@ cellstr_h5writeatt(hdfFile, 'dimord', dimord)
 hdfHash = spy.hash.DataHash(hdfFile, 'SHA-1', 'file');
 
 jsonFile = fullfile(path, [base, ext, '.info']);
-spyInfo = spy.SyncopyInfo();
 
 spyInfo.filename = [base, ext];
 spyInfo.x0x5F_log = log;
-spyInfo.x0x5F_version = version;
 spyInfo.dimord = dimord;
 spyInfo.samplerate = samplerate;
 spyInfo.dataclass = dclass;
