@@ -84,9 +84,9 @@ else
     end
     [folder, basename, ext] = fileparts(container);
     if ~strcmp(ext, '.spy')
-        container = [basename '.spy'];
+        ext = '.spy';
     end
-    container = fullfile(what(folder).path, container);
+    container = fullfile(what(folder).path, [basename, ext]);
     prefix = '';
     if ~isempty(tag)
         prefix = '_';
